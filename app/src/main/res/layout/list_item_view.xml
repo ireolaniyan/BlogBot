@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="64dp"
+        android:scaleType="fitCenter"
+        android:id="@+id/simple_imageView"
+        android:contentDescription="News Image"/>
+
+    <TextView
+        android:padding="16dp"
+        android:layout_toRightOf="@id/simple_imageView"
+        android:layout_toEndOf="@id/simple_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:id="@+id/news_tv"
+        tools:text="Get exciting news here"/>
+
+    <TextView
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:text="12:00pm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/news_tv"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/time_tv" />
+
+</RelativeLayout>
