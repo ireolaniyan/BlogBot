@@ -1,28 +1,41 @@
 package com.ire.blogbot;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mNewsAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TextView mErrorMessage;
+    private ProgressBar mLoadingIndicator;
+    ArrayList<News> news = null;
+    NetworkInfo info;
+    String source;
+//    The Loader takes in a bundle
+    Bundle sourceBundle = new Bundle();
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-//    private static final String TECH_NEWS_REQUEST_URL = "https://newsapi.org/v1/articles?source=techcrunch&sortBy=latest&apiKey=3431d57e51a04c1d967e2eb96c99fd1a";
+    private static final String NEWS_SOURCE = "techcrunch";
+    private static final int TECH_NEWS_LOADER = 22;
 
-    ArrayList<News> news;
+//    private static final String TECH_NEWS_REQUEST_URL = "https://newsapi.org/v1/articles?source=techcrunch&sortBy=latest&apiKey=3431d57e51a04c1d967e2eb96c99fd1a";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,67 +45,121 @@ public class MainActivity extends AppCompatActivity {
 //        TODO: SwipeRefresh layout
 //        TODO: View pager - tech and gist
 //        TODO: Open link after list click event
+//        TODO: add images of news
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        mErrorMessage = (TextView) findViewById(R.id.tv_error_message);
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-//        TODO: Change to real data
-//        news = News.newsList(20);
+//        COMPLETED: Change to real data
 
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+//        updateUI();
 
-        updateUI();
+        source = "techcrunch";
+        sourceBundle.putString("source", source);
+
+        getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+//        getSupportLoaderManager().restartLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                updateUI();
+//                updateUI();
                 Log.v(LOG_TAG, "Refreshing");
             }
         });
-
-//        COMPLETED: set the adapter on the recycler view
-        mNewsAdapter = new NewsAdapter(news);
-        mRecyclerView.setAdapter(mNewsAdapter);
-        mNewsAdapter.notifyDataSetChanged();
     }
 
-    public void updateUI(){
-        URL techNewsUrl = NetworkUtils.buildUrl("techcrunch");
-        GetNews getNews = new GetNews();
-        getNews.execute(techNewsUrl);
-    }
+   /* public void updateUI() {
+//        URL techNewsUrl = NetworkUtils.buildUrl(NEWS_SOURCE);
+//        Log.i(LOG_TAG, "techNewsUrl: " + techNewsUrl.toString());
+        *//*GetNews getNews = new GetNews();
+        getNews.execute(techNewsUrl);*//*
+/
+        source = "techcrunch";
+        sourceBundle.putString("source", source);
+        if (techNewsUrl == null){
+            getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+        }else{
+            getSupportLoaderManager().restartLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+        }
+    }*/
 
-    private class GetNews extends AsyncTask<URL, Void, String>{
-
-        private final String LOG_TAG = MainActivity.class.getSimpleName();
+    public class NewsDataLoader implements LoaderManager.LoaderCallbacks<ArrayList<News>> {
+        private NewsAdapter mNewsAdapter;
+        private RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
 
         @Override
-        protected String doInBackground(URL... urls) {
+        public Loader<ArrayList<News>> onCreateLoader(int id, final Bundle args) {
+            ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
+                    .getSystemService(CONNECTIVITY_SERVICE);
 
-            URL techUrl = urls[0];
-            String techNewsResults = null;
+            info = cm.getActiveNetworkInfo();
 
-            try{
-                techNewsResults = NetworkUtils.getResponseFromHttpUrl(techUrl);
-            }catch (IOException e){
-                Log.e(LOG_TAG, "Error fetching data", e);
+//            NewsLoader newsLoader = new NewsLoader(MainActivity.this, args);
+
+            if (info != null && info.isConnectedOrConnecting()) {
+                mErrorMessage.setVisibility(View.INVISIBLE);
+                mLoadingIndicator.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+
+                return new AsyncTaskLoader<ArrayList<News>>(MainActivity.this) {
+                    //    The Loader takes in a bundle
+                    Bundle sourceBundle = new Bundle();
+
+                    @Override
+                    protected void onStartLoading() {
+                        forceLoad();
+                    }
+
+                    @Override
+                    public ArrayList<News> loadInBackground() {
+                        ArrayList<News> news = null;
+                        try {
+                            news = NetworkUtils.parseJSON(sourceBundle.getString(NEWS_SOURCE));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return news;
+                    }
+                };
             }
-
-            return techNewsResults;
+            mErrorMessage.setVisibility(View.VISIBLE);
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mErrorMessage.setText(getString(R.string.internet_error));
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String techNewsResults) {
-            if (techNewsResults != null){
-                try {
-                    NetworkUtils.parseJSON(techNewsResults);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        public void onLoadFinished(Loader<ArrayList<News>> loader, ArrayList<News> data) {
+            mLoadingIndicator.setVisibility(View.GONE);
+            if (data != null) {
+                if (news != null) {
+                    news.clear();
+                    news.addAll(data);
+                    if(mNewsAdapter != null) {
+                        mNewsAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    news = data;
                 }
+                mNewsAdapter = new NewsAdapter(news);
+
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(loader.getContext()));
+                mRecyclerView.setAdapter(mNewsAdapter);
+            } else {
+                mErrorMessage.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.INVISIBLE);
+                mErrorMessage.setText(getString(R.string.internet_error));
             }
         }
+
+        @Override
+        public void onLoaderReset(Loader<ArrayList<News>> loader) {
+            loader.forceLoad();
+        }
+
     }
 
 }

@@ -34,7 +34,7 @@ public class News {
 //        return mImageUrl;
 //    }
 
-/*//    TODO: Remove fake model
+/*//    COMPLETED: Remove fake model
     private static int past = 1;
 
     public static ArrayList<News> newsList(int numberToDisplay){

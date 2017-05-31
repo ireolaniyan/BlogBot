@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,6 +9,26 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_error_message"
+        tools:text="Oops! Couldn't connect to a network"
+        android:gravity="center"
+        android:layout_margin="32dp"
+        android:textSize="16sp"
+        android:fontFamily="monospace"
+        android:visibility="invisible"/>
+
+    <ProgressBar
+        android:id="@+id/pb_loading_indicator"
+        android:layout_height="42dp"
+        android:layout_width="42dp"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_main"

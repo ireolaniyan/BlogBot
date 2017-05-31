@@ -44,14 +44,12 @@ public class NetworkUtils {
                 }
             }
 
-
         }catch (JSONException | NullPointerException e){
             e.printStackTrace();
             return null;
         }
         return news;
     }
-
 
 //    Builds the tech news url
     public static URL buildUrl(String techNewsSource){
@@ -67,6 +65,8 @@ public class NetworkUtils {
                 .appendQueryParameter(PARAM_SORT_BY, latest)
                 .appendQueryParameter(PARAM_API_KEY, KEY)
                 .build();
+
+        Log.i(LOG_TAG, builtUri.toString());
 
         URL url = null;
         try{
@@ -91,7 +91,10 @@ public class NetworkUtils {
 
         try{
             urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setReadTimeout(15000);
+            urlConnection.setConnectTimeout(10000);
             urlConnection.setRequestMethod("GET");
+            urlConnection.setDoOutput(true);
             urlConnection.connect();
 
 //                Read the input stream into a String

@@ -33,4 +33,16 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/time_tv" />
 
+   <!-- <TextView
+        android:id="@+id/tv_error_message"
+        android:textSize="22sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Oops! Couldn't connect to a network"
+        android:visibility="invisible"
+        android:gravity="center"/>  -->
+
+
+
 </RelativeLayout>
