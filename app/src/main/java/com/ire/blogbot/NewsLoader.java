@@ -30,7 +30,7 @@ import java.util.ArrayList;
     public ArrayList<News> loadInBackground() {
         ArrayList<News> news = null;
         try {
-            news = NetworkUtils.parseJSON(sourceBundle.getString(NEWS_SOURCE));
+            news = TechNetworkUtils.parseJSON(sourceBundle.getString(NEWS_SOURCE));
         } catch (IOException e) {
             e.printStackTrace();
         }

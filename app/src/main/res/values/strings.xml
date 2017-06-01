@@ -2,4 +2,7 @@
     <string name="app_name">BlogBot</string>
 
     <string name="internet_error">Oops! Couldnt connect to the internet</string>
+
+    <string name="entertainmet_page_title">ENTERTAINMENT</string>
+    <string name="tech_page_title">TECH</string>
 </resources>

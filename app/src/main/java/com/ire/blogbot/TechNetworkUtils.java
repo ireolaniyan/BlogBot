@@ -17,10 +17,11 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by ire on 6/1/17.
+ * Created by ire on 5/27/17.
  */
 
-public class NetworkUtils {
+public class TechNetworkUtils {
+
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     /*public static ArrayList<News> parseJSON(String source) throws IOException {
@@ -78,7 +79,6 @@ public class NetworkUtils {
         return url;
     }*/
 
-
     public static ArrayList<News> parseJSON() throws IOException {
         URL url = buildUrl();
         String jsonResult = getResponseFromHttpUrl(url);
@@ -111,20 +111,18 @@ public class NetworkUtils {
         return news;
     }
 
-    //    https://newsapi.org/v1/articles?source=entertainment-weekly&sortBy=top&apiKey=3431d57e51a04c1d967e2eb96c99fd1a
-
     public static URL buildUrl(){
-        final String ENTERTAINMENT_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
+        final String TECH_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
         final String PARAM_SOURCE = "source";
-        final String ENTERTAINMENT_NEWS_SOURCE = "entertainment-weekly";
+        final String TECH_NEWS_SOURCE = "techcrunch";
         final String PARAM_SORT_BY = "sortBy";
-        final String top = "top";
+        final String latest = "latest";
         final String PARAM_API_KEY = "apiKey";
         final String KEY = "3431d57e51a04c1d967e2eb96c99fd1a";
 
-        Uri builtUri = Uri.parse(ENTERTAINMENT_NEWS_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_SOURCE, ENTERTAINMENT_NEWS_SOURCE)
-                .appendQueryParameter(PARAM_SORT_BY, top)
+        Uri builtUri = Uri.parse(TECH_NEWS_BASE_URL).buildUpon()
+                .appendQueryParameter(PARAM_SOURCE, TECH_NEWS_SOURCE)
+                .appendQueryParameter(PARAM_SORT_BY, latest)
                 .appendQueryParameter(PARAM_API_KEY, KEY)
                 .build();
 
