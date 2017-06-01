@@ -24,8 +24,63 @@ public class NetworkUtils {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    public static ArrayList<News> parseJSON(String source) throws IOException {
-        URL url = buildUrl(source);
+    /*public static ArrayList<News> parseJSON(String source) throws IOException {
+//        URL url = buildUrl(source);
+        URL url = buildUrl();
+        String jsonResult = getResponseFromHttpUrl(url);
+
+        ArrayList<News> news = new ArrayList<>();
+
+        try{
+            JSONObject jsonObject = new JSONObject(jsonResult);
+            JSONArray jsonArray = jsonObject.getJSONArray("articles");
+
+            if (jsonArray != null){
+                for (int i = 0; i < jsonArray.length(); i++){
+                    JSONObject article = jsonArray.getJSONObject(i);
+                    String title = article.getString("title");
+//                    String image = article.getString("urlToImage");
+                    String time = article.getString("publishedAt");
+                    news.add(new News(title, time));
+                }
+            }
+
+        }catch (JSONException | NullPointerException e){
+            e.printStackTrace();
+            return null;
+        }
+        return news;
+    }*/
+
+//    Builds the tech news url
+  /*  public static URL buildUrl(String techNewsSource){
+        final String TECH_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
+        final String PARAM_SOURCE = "source";
+        final String SOURCE = "techcrunch";
+        final String PARAM_SORT_BY = "sortBy";
+        final String latest = "latest";
+        final String PARAM_API_KEY = "apiKey";
+        final String KEY = "3431d57e51a04c1d967e2eb96c99fd1a";
+
+        Uri builtUri = Uri.parse(TECH_NEWS_BASE_URL).buildUpon()
+                .appendQueryParameter(PARAM_SOURCE, techNewsSource)
+                .appendQueryParameter(PARAM_SORT_BY, latest)
+                .appendQueryParameter(PARAM_API_KEY, KEY)
+                .build();
+
+        Log.i(LOG_TAG, builtUri.toString());
+
+        URL url = null;
+        try{
+            url = new URL(builtUri.toString());
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+        }
+        return url;
+    }*/
+
+    public static ArrayList<News> parseJSON() throws IOException {
+        URL url = buildUrl();
         String jsonResult = getResponseFromHttpUrl(url);
 
         ArrayList<News> news = new ArrayList<>();
@@ -51,17 +106,17 @@ public class NetworkUtils {
         return news;
     }
 
-//    Builds the tech news url
-    public static URL buildUrl(String techNewsSource){
+    public static URL buildUrl(){
         final String TECH_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
         final String PARAM_SOURCE = "source";
+        final String TECH_NEWS_SOURCE = "techcrunch";
         final String PARAM_SORT_BY = "sortBy";
         final String latest = "latest";
         final String PARAM_API_KEY = "apiKey";
         final String KEY = "3431d57e51a04c1d967e2eb96c99fd1a";
 
         Uri builtUri = Uri.parse(TECH_NEWS_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_SOURCE, techNewsSource)
+                .appendQueryParameter(PARAM_SOURCE, TECH_NEWS_SOURCE)
                 .appendQueryParameter(PARAM_SORT_BY, latest)
                 .appendQueryParameter(PARAM_API_KEY, KEY)
                 .build();
@@ -70,7 +125,7 @@ public class NetworkUtils {
 
         URL url = null;
         try{
-           url = new URL(builtUri.toString());
+            url = new URL(builtUri.toString());
         }catch (MalformedURLException e){
             e.printStackTrace();
         }
@@ -94,7 +149,8 @@ public class NetworkUtils {
             urlConnection.setReadTimeout(15000);
             urlConnection.setConnectTimeout(10000);
             urlConnection.setRequestMethod("GET");
-            urlConnection.setDoOutput(true);
+            urlConnection.setDoOutput(false);
+            urlConnection.setDoInput(true);
             urlConnection.connect();
 
 //                Read the input stream into a String

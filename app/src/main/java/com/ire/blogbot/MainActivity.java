@@ -2,7 +2,7 @@ package com.ire.blogbot;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mErrorMessage;
-    private ProgressBar mLoadingIndicator;
+//    private ProgressBar mLoadingIndicator;
     ArrayList<News> news = null;
     NetworkInfo info;
     String source;
@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String NEWS_SOURCE = "techcrunch";
     private static final int TECH_NEWS_LOADER = 22;
+
+    private RecyclerView mRecyclerView;
 
 //    private static final String TECH_NEWS_REQUEST_URL = "https://newsapi.org/v1/articles?source=techcrunch&sortBy=latest&apiKey=3431d57e51a04c1d967e2eb96c99fd1a";
 
@@ -49,91 +51,100 @@ public class MainActivity extends AppCompatActivity {
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
         mErrorMessage = (TextView) findViewById(R.id.tv_error_message);
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+//        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
 
 //        COMPLETED: Change to real data
+        updateUI();
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
+                .getSystemService(CONNECTIVITY_SERVICE);
 
-//        updateUI();
+        info = cm.getActiveNetworkInfo();
 
-        source = "techcrunch";
-        sourceBundle.putString("source", source);
+//            NewsLoader newsLoader = new NewsLoader(MainActivity.this, args);
 
-        getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+//        return null;
 //        getSupportLoaderManager().restartLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                updateUI();
                 Log.v(LOG_TAG, "Refreshing");
+                updateUI();
+//                getSupportLoaderManager().restartLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
             }
         });
     }
 
-   /* public void updateUI() {
-//        URL techNewsUrl = NetworkUtils.buildUrl(NEWS_SOURCE);
+    public void updateUI() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (info != null && info.isConnectedOrConnecting()) {
+                    mErrorMessage.setVisibility(View.INVISIBLE);
+//                    mLoadingIndicator.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+
+//                    source = "techcrunch";
+//                    URL techNewsUrl = NetworkUtils.buildUrl(NEWS_SOURCE);
+                    URL techNewsUrl = NetworkUtils.buildUrl();
+                    sourceBundle.putString("source", techNewsUrl.toString());
+
+                    getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
+                Log.v(LOG_TAG, "Finished refreshing");
+
+                mErrorMessage.setVisibility(View.VISIBLE);
+//                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.INVISIBLE);
+                mErrorMessage.setText(getString(R.string.internet_error));
+            }
+        }, 5000);
+
+      /*  URL techNewsUrl = NetworkUtils.buildUrl(NEWS_SOURCE);
 //        Log.i(LOG_TAG, "techNewsUrl: " + techNewsUrl.toString());
-        *//*GetNews getNews = new GetNews();
-        getNews.execute(techNewsUrl);*//*
-/
+//        GetNews getNews = new GetNews();
+//        getNews.execute(techNewsUrl);
         source = "techcrunch";
         sourceBundle.putString("source", source);
         if (techNewsUrl == null){
             getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
         }else{
             getSupportLoaderManager().restartLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
-        }
-    }*/
+        }*/
+    }
 
     public class NewsDataLoader implements LoaderManager.LoaderCallbacks<ArrayList<News>> {
         private NewsAdapter mNewsAdapter;
-        private RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
 
         @Override
         public Loader<ArrayList<News>> onCreateLoader(int id, final Bundle args) {
-            ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
-                    .getSystemService(CONNECTIVITY_SERVICE);
+            return new AsyncTaskLoader<ArrayList<News>>(MainActivity.this) {
+                //    The Loader takes in a bundle
+                Bundle sourceBundle = new Bundle();
 
-            info = cm.getActiveNetworkInfo();
+                @Override
+                protected void onStartLoading() {
+                    forceLoad();
+                }
 
-//            NewsLoader newsLoader = new NewsLoader(MainActivity.this, args);
-
-            if (info != null && info.isConnectedOrConnecting()) {
-                mErrorMessage.setVisibility(View.INVISIBLE);
-                mLoadingIndicator.setVisibility(View.VISIBLE);
-                mRecyclerView.setVisibility(View.VISIBLE);
-
-                return new AsyncTaskLoader<ArrayList<News>>(MainActivity.this) {
-                    //    The Loader takes in a bundle
-                    Bundle sourceBundle = new Bundle();
-
-                    @Override
-                    protected void onStartLoading() {
-                        forceLoad();
+                @Override
+                public ArrayList<News> loadInBackground() {
+                    ArrayList<News> news = null;
+                    try {
+                        news = NetworkUtils.parseJSON();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-
-                    @Override
-                    public ArrayList<News> loadInBackground() {
-                        ArrayList<News> news = null;
-                        try {
-                            news = NetworkUtils.parseJSON(sourceBundle.getString(NEWS_SOURCE));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        return news;
-                    }
-                };
-            }
-            mErrorMessage.setVisibility(View.VISIBLE);
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            mRecyclerView.setVisibility(View.INVISIBLE);
-            mErrorMessage.setText(getString(R.string.internet_error));
-            return null;
+                    return news;
+                }
+            };
         }
 
         @Override
         public void onLoadFinished(Loader<ArrayList<News>> loader, ArrayList<News> data) {
-            mLoadingIndicator.setVisibility(View.GONE);
+//            mLoadingIndicator.setVisibility(View.GONE);
             if (data != null) {
                 if (news != null) {
                     news.clear();
