@@ -13,7 +13,7 @@ public class News {
         mNews = news;
         mTime = time;
         mImageUrl = imageUrl;
-    }*/
+     }*/
 
     public News(String news, String time){
         mNews = news;

@@ -32,7 +32,7 @@ import static android.content.Context.CONNECTIVITY_SERVICE;
 public class EntertainmentNewsFragment extends Fragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mErrorMessage;
-    ArrayList<News> news = null;
+    ArrayList<News> news;
     NetworkInfo info;
     //    The Loader takes in a bundle
     Bundle sourceBundle = new Bundle();
@@ -61,17 +61,17 @@ public class EntertainmentNewsFragment extends Fragment {
 
         getLoaderManager().initLoader(ENTERTAINMENT_NEWS_LOADER, sourceBundle, new NewsDataLoader());
 
-        updateUI();
+//        updateUI();
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.v(LOG_TAG, "Refreshing");
-                updateUI();
+//                updateUI();
+                getLoaderManager().restartLoader(ENTERTAINMENT_NEWS_LOADER, sourceBundle, new NewsDataLoader());
 //                getSupportLoaderManager().restartLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
             }
         });
-
         return view;
     }
 
@@ -85,12 +85,16 @@ public class EntertainmentNewsFragment extends Fragment {
     }
 
     public void updateUI() {
-        mErrorMessage.setVisibility(View.INVISIBLE);
-        mRecyclerView.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mErrorMessage.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
 
-        URL entertainmentNewsUrl = NetworkUtils.buildUrl(ENTERTAINMENT_NEWS_SOURCE);
-        sourceBundle.putString("source", entertainmentNewsUrl.toString());
-
+                URL entertainmentNewsUrl = NetworkUtils.buildUrl(ENTERTAINMENT_NEWS_SOURCE);
+                sourceBundle.putString("source", entertainmentNewsUrl.toString());
+            }
+        }, 5000);
         mSwipeRefreshLayout.setRefreshing(false);
         Log.v(LOG_TAG, "Finished refreshing");
     }

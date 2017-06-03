@@ -104,6 +104,8 @@ public class TechNetworkUtils {
                         return null;
                     }
                     news.add(new News(title, time));
+                    Log.i(LOG_TAG, title);
+                    Log.i(LOG_TAG, time);
                 }
             }
 

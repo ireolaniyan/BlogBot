@@ -87,6 +87,8 @@ public class NetworkUtils {
         String jsonResult = getResponseFromHttpUrl(url);
         String time = "";
 
+        Log.i(LOG_TAG, jsonResult);
+
         ArrayList<News> news = new ArrayList<>();
 
         try{
@@ -156,8 +158,8 @@ public class NetworkUtils {
 
         try{
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(15000);
-            urlConnection.setConnectTimeout(10000);
+//            urlConnection.setReadTimeout(15000);
+//            urlConnection.setConnectTimeout(10000);
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoOutput(false);
             urlConnection.setDoInput(true);

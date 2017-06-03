@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class NewsLoader extends android.support.v4.content.AsyncTaskLoader<ArrayList<News>> {
 //    The Loader takes in a bundle
     Bundle sourceBundle = new Bundle();
-    private static final String NEWS_SOURCE = "techcrunch";
+    private static final String NEWS_SOURCE = "entertainment-weekly";
 
     public NewsLoader(Context context, Bundle args){
         super(context);
@@ -31,7 +31,7 @@ public class NewsLoader extends android.support.v4.content.AsyncTaskLoader<Array
     public ArrayList<News> loadInBackground() {
         ArrayList<News> news = null;
         try {
-            news = NetworkUtils.parseJSON(sourceBundle.getString("source"));
+            news = NetworkUtils.parseJSON(NEWS_SOURCE);
         } catch (IOException e) {
             e.printStackTrace();
         }

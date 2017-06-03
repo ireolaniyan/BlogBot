@@ -1,48 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+   <!-- <ImageView
         android:layout_width="56dp"
         android:layout_height="64dp"
         android:scaleType="fitCenter"
         android:id="@+id/simple_imageView"
-        android:contentDescription="News Image"/>
+        android:contentDescription="News Image"/>  -->
 
-    <TextView
-        android:padding="16dp"
-        android:layout_toRightOf="@id/simple_imageView"
-        android:layout_toEndOf="@id/simple_imageView"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:id="@+id/news_tv"
-        tools:text="Get exciting news here"/>
+    <!-- android:layout_toRightOf="@id/simple_imageView"
+           android:layout_toEndOf="@id/simple_imageView" -->
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/title_frame">
 
-    <TextView
-        android:paddingRight="16dp"
-        android:paddingBottom="16dp"
-        tools:text="12:00pm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/news_tv"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/time_tv" />
+        <TextView
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:id="@+id/news_tv"
+            tools:text="Get exciting news here"/>
 
-   <!-- <TextView
-        android:id="@+id/tv_error_message"
-        android:textSize="22sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Oops! Couldn't connect to a network"
-        android:visibility="invisible"
-        android:gravity="center"/>  -->
+</FrameLayout>
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end">
 
+        <TextView
+            android:id="@+id/time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:paddingRight="16dp"
+            tools:text="12:00pm"/>
+</FrameLayout>
 
-
-</RelativeLayout>
+</LinearLayout>
