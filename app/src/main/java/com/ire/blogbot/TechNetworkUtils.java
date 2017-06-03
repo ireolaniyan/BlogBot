@@ -3,6 +3,9 @@ package com.ire.blogbot;
 import android.net.Uri;
 import android.util.Log;
 
+import com.ire.blogbot.model.News;
+import com.ire.blogbot.activity.MainActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

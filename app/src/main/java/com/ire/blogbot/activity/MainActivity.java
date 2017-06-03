@@ -1,9 +1,12 @@
-package com.ire.blogbot;
+package com.ire.blogbot.activity;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.ire.blogbot.R;
+import com.ire.blogbot.fragments.NewsFragmentPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,9 +18,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //        TODO: SwipeRefresh layout
-//        TODO: View pager - tech and gist
+//        COMPLETED: View pager - tech and gist
 //        TODO: Open link after list click event
 //        TODO: add images of news
+//        TODO: Show * notification on viewpager titles
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);

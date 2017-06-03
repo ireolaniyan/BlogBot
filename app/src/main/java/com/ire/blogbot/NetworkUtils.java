@@ -3,6 +3,9 @@ package com.ire.blogbot;
 import android.net.Uri;
 import android.util.Log;
 
+import com.ire.blogbot.model.News;
+import com.ire.blogbot.activity.MainActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,8 +82,8 @@ public class NetworkUtils {
     }*/
 
 
-    public static ArrayList<News> parseJSON() throws IOException {
-        URL url = buildUrl();
+    public static ArrayList<News> parseJSON(String source) throws IOException {
+        URL url = buildUrl(source);
         String jsonResult = getResponseFromHttpUrl(url);
         String time = "";
 
@@ -113,17 +116,17 @@ public class NetworkUtils {
 
     //    https://newsapi.org/v1/articles?source=entertainment-weekly&sortBy=top&apiKey=3431d57e51a04c1d967e2eb96c99fd1a
 
-    public static URL buildUrl(){
+    public static URL buildUrl(String entertainmentNewsSource){
         final String ENTERTAINMENT_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
         final String PARAM_SOURCE = "source";
-        final String ENTERTAINMENT_NEWS_SOURCE = "entertainment-weekly";
+//        final String ENTERTAINMENT_NEWS_SOURCE = "entertainment-weekly";
         final String PARAM_SORT_BY = "sortBy";
         final String top = "top";
         final String PARAM_API_KEY = "apiKey";
         final String KEY = "3431d57e51a04c1d967e2eb96c99fd1a";
 
         Uri builtUri = Uri.parse(ENTERTAINMENT_NEWS_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_SOURCE, ENTERTAINMENT_NEWS_SOURCE)
+                .appendQueryParameter(PARAM_SOURCE, entertainmentNewsSource)
                 .appendQueryParameter(PARAM_SORT_BY, top)
                 .appendQueryParameter(PARAM_API_KEY, KEY)
                 .build();

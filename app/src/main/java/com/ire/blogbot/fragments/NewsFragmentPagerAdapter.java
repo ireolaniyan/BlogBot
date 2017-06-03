@@ -1,15 +1,11 @@
-package com.ire.blogbot;
-
+package com.ire.blogbot.fragments;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+
+import com.ire.blogbot.R;
 
 public class NewsFragmentPagerAdapter extends FragmentPagerAdapter {
 
@@ -24,7 +20,7 @@ public class NewsFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new NewsFragment();
+                return new EntertainmentNewsFragment();
             case 1:
                 return new TechNewsFragment();
             default:

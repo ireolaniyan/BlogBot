@@ -21,13 +21,6 @@
         android:fontFamily="monospace"
         android:visibility="invisible"/>
 
-    <ProgressBar
-        android:id="@+id/pb_loading_indicator"
-        android:layout_height="42dp"
-        android:layout_width="42dp"
-        android:layout_gravity="center"
-        android:visibility="invisible" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_main"
         android:layout_width="match_parent"

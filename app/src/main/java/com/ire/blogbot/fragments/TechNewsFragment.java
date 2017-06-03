@@ -1,9 +1,7 @@
-package com.ire.blogbot;
+package com.ire.blogbot.fragments;
 
-import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -19,33 +17,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ire.blogbot.activity.MainActivity;
+import com.ire.blogbot.model.News;
+import com.ire.blogbot.NewsAdapter;
+import com.ire.blogbot.R;
+import com.ire.blogbot.TechNetworkUtils;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
-public class NewsFragment extends Fragment {
+public class TechNewsFragment extends Fragment {
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mErrorMessage;
-    //    private ProgressBar mLoadingIndicator;
     ArrayList<News> news = null;
     NetworkInfo info;
-    String source;
     //    The Loader takes in a bundle
     Bundle sourceBundle = new Bundle();
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private static final String ENTERTAINMENT_NEWS_SOURCE = "entertainment-weekly";
-    private static final int ENTERTAINMENT_NEWS_LOADER = 21;
+    private static final String TECH_NEWS_SOURCE = "techcrunch";
+    private static final int TECH_NEWS_LOADER = 22;
 
     private RecyclerView mRecyclerView;
 
 
-    public NewsFragment() {
+    public TechNewsFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +57,6 @@ public class NewsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         mErrorMessage = (TextView) view.findViewById(R.id.tv_error_message);
-//        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_main);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
 
@@ -84,23 +87,21 @@ public class NewsFragment extends Fragment {
             public void run() {
                 if (info != null && info.isConnectedOrConnecting()) {
                     mErrorMessage.setVisibility(View.INVISIBLE);
-//                    mLoadingIndicator.setVisibility(View.VISIBLE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-//                    source = "techcrunch";
-//                    URL techNewsUrl = TechNetworkUtils.buildUrl(NEWS_SOURCE);
-                    URL entertainmentNewsUrl = NetworkUtils.buildUrl();
-                    sourceBundle.putString("source", entertainmentNewsUrl.toString());
+//                    URL techNewsUrl = TechNetworkUtils.buildUrl(TECH_NEWS_SOURCE);
+                    URL techNewsUrl = TechNetworkUtils.buildUrl();
+                    sourceBundle.putString("source", techNewsUrl.toString());
 
-                    getLoaderManager().initLoader(ENTERTAINMENT_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+                    getLoaderManager().initLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
                 Log.v(LOG_TAG, "Finished refreshing");
 
-                mErrorMessage.setVisibility(View.VISIBLE);
+         /*       mErrorMessage.setVisibility(View.VISIBLE);
 //                mLoadingIndicator.setVisibility(View.INVISIBLE);
                 mRecyclerView.setVisibility(View.INVISIBLE);
-                mErrorMessage.setText(getString(R.string.internet_error));
+                mErrorMessage.setText(getString(R.string.internet_error));*/
             }
         }, 5000);
 
@@ -113,9 +114,6 @@ public class NewsFragment extends Fragment {
         @Override
         public Loader<ArrayList<News>> onCreateLoader(int id, final Bundle args) {
             return new AsyncTaskLoader<ArrayList<News>>(getActivity()) {
-                //    The Loader takes in a bundle
-                Bundle sourceBundle = new Bundle();
-
                 @Override
                 protected void onStartLoading() {
                     forceLoad();
@@ -125,7 +123,7 @@ public class NewsFragment extends Fragment {
                 public ArrayList<News> loadInBackground() {
                     ArrayList<News> news = null;
                     try {
-                        news = NetworkUtils.parseJSON();
+                        news = TechNetworkUtils.parseJSON();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -136,7 +134,6 @@ public class NewsFragment extends Fragment {
 
         @Override
         public void onLoadFinished(Loader<ArrayList<News>> loader, ArrayList<News> data) {
-//            mLoadingIndicator.setVisibility(View.GONE);
             if (data != null) {
                 if (news != null) {
                     news.clear();

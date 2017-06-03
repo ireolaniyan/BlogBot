@@ -1,6 +1,4 @@
-package com.ire.blogbot;
-
-import java.util.ArrayList;
+package com.ire.blogbot.model;
 
 /**
  * Created by ire on 5/24/17.
@@ -34,15 +32,5 @@ public class News {
 //        return mImageUrl;
 //    }
 
-/*//    COMPLETED: Remove fake model
-    private static int past = 1;
-
-    public static ArrayList<News> newsList(int numberToDisplay){
-        ArrayList<News> news = new ArrayList<>();
-
-        for(int i = 0; i < numberToDisplay; i++){
-            news.add(new News("News " + past++, "Time " + 1));
-        }
-        return news;
-    }*/
+//    COMPLETED: Remove fake model
 }

@@ -18,7 +18,7 @@
 
     <!-- Text appearance style for a category tab -->
     <style name="CategoryTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
 </resources>

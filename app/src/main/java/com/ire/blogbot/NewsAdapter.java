@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ire.blogbot.model.News;
+
 import java.util.ArrayList;
 
 /**
@@ -14,16 +16,16 @@ import java.util.ArrayList;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
-//    A variable used to reference the model
+//    Variable used to reference the model
     private ArrayList<News> mNews = new ArrayList<>();
 
-//    Create a NewsHolder class that extends the ViewHolder
+//    NewsHolder class that extends the ViewHolder
     public static class NewsHolder extends RecyclerView.ViewHolder{
 //        private ImageView mImageView;
         private TextView mNewsTextView;
         private TextView mTimeStampTextView;
 
-//    A constructor to set the views
+//   Constructor to set the views
         public NewsHolder(View itemView){
             super(itemView);
 //            mImageView = (ImageView) itemView.findViewById(R.id.simple_imageView);
