@@ -17,7 +17,7 @@ public class NewsLoader extends android.support.v4.content.AsyncTaskLoader<Array
     Bundle sourceBundle = new Bundle();
     private static final String NEWS_SOURCE = "entertainment-weekly";
 
-    public NewsLoader(Context context, Bundle args){
+    public NewsLoader(Context context, final Bundle args){
         super(context);
         sourceBundle = args;
     }
@@ -31,7 +31,7 @@ public class NewsLoader extends android.support.v4.content.AsyncTaskLoader<Array
     public ArrayList<News> loadInBackground() {
         ArrayList<News> news = null;
         try {
-            news = NetworkUtils.parseJSON(NEWS_SOURCE);
+            news = EntertainmentNetworkUtils.parseJSON(NEWS_SOURCE);
         } catch (IOException e) {
             e.printStackTrace();
         }

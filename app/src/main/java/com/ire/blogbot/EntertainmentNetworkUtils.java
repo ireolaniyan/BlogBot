@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * Created by ire on 6/1/17.
  */
 
-public class NetworkUtils {
+public class EntertainmentNetworkUtils {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     /*public static ArrayList<News> parseJSON(String source) throws IOException {

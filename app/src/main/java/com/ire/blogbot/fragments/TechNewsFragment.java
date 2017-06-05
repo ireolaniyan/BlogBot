@@ -26,6 +26,7 @@ import com.ire.blogbot.TechNetworkUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
@@ -33,13 +34,15 @@ public class TechNewsFragment extends Fragment {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mErrorMessage;
-    ArrayList<News> news = null;
+    private NewsAdapter mNewsAdapter;
+    ArrayList<News> news;
     NetworkInfo info;
     //    The Loader takes in a bundle
     Bundle sourceBundle = new Bundle();
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private static final String TECH_NEWS_QUERY_URL = "query";
     private static final String TECH_NEWS_SOURCE = "techcrunch";
     private static final int TECH_NEWS_LOADER = 22;
 
@@ -50,7 +53,6 @@ public class TechNewsFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,104 +62,142 @@ public class TechNewsFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_main);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
 
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
 
-//        COMPLETED: Change to real data
-        updateUI();
-        ConnectivityManager cm = (ConnectivityManager) getActivity()
-                .getSystemService(CONNECTIVITY_SERVICE);
+//        COMPLETED: Change to real data/
 
-        info = cm.getActiveNetworkInfo();
+        getActivity().getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, null, new NewsDataLoader());
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.v(LOG_TAG, "Refreshing");
-                updateUI();
-//                getSupportLoaderManager().restartLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+                restartLoader();
+                mSwipeRefreshLayout.setColorSchemeResources(
+                        R.color.colorPrimary,
+                        R.color.colorPrimaryDark);
             }
         });
 
         return view;
     }
 
-    public void updateUI() {
+    private boolean isConnected(){
+        ConnectivityManager cm = (ConnectivityManager) getActivity()
+                .getSystemService(CONNECTIVITY_SERVICE);
+
+        info = cm.getActiveNetworkInfo();
+
+        return info != null && info.isConnectedOrConnecting();
+    }
+
+    private int anyRandomInt(Random random) {
+        return random.nextInt();
+    }
+
+    private void restartLoader() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (info != null && info.isConnectedOrConnecting()) {
-                    mErrorMessage.setVisibility(View.INVISIBLE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
+                URL techNewsUrl = TechNetworkUtils.buildUrl(TECH_NEWS_SOURCE);
+                sourceBundle.putString(TECH_NEWS_QUERY_URL, techNewsUrl.toString());
 
-//                    URL techNewsUrl = TechNetworkUtils.buildUrl(TECH_NEWS_SOURCE);
-                    URL techNewsUrl = TechNetworkUtils.buildUrl();
-                    sourceBundle.putString("source", techNewsUrl.toString());
+                Random random = new Random();
+                int uniqueId = anyRandomInt(random); //Generates a new ID for each loader call;
 
-                    getLoaderManager().initLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+//                    sourceBundle.putString("query", s);]
+
+                LoaderManager loaderManager = getActivity().getSupportLoaderManager();
+
+                if (loaderManager.getLoader(TECH_NEWS_LOADER) == null) {
+                    loaderManager.initLoader(uniqueId, sourceBundle, new NewsDataLoader());
+                } else {
+                    loaderManager.restartLoader(TECH_NEWS_LOADER, sourceBundle, new
+                            NewsDataLoader());
                 }
-                mSwipeRefreshLayout.setRefreshing(false);
-                Log.v(LOG_TAG, "Finished refreshing");
-
-         /*       mErrorMessage.setVisibility(View.VISIBLE);
-//                mLoadingIndicator.setVisibility(View.INVISIBLE);
-                mRecyclerView.setVisibility(View.INVISIBLE);
-                mErrorMessage.setText(getString(R.string.internet_error));*/
             }
         }, 5000);
-
+        mSwipeRefreshLayout.setRefreshing(false);
+        Log.v(LOG_TAG, "Finished refreshing");
     }
 
+    private void showErrorScreen(){
+        mErrorMessage.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorMessage.setText(getString(R.string.internet_error));
+    }
 
     public class NewsDataLoader implements LoaderManager.LoaderCallbacks<ArrayList<News>> {
-        private NewsAdapter mNewsAdapter;
+
 
         @Override
         public Loader<ArrayList<News>> onCreateLoader(int id, final Bundle args) {
-            return new AsyncTaskLoader<ArrayList<News>>(getActivity()) {
-                @Override
-                protected void onStartLoading() {
-                    forceLoad();
-                }
+            if (isConnected()){
+                mErrorMessage.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+                return new AsyncTaskLoader<ArrayList<News>>(getActivity()) {
+                    ArrayList<News> mNewsData = null;
 
-                @Override
-                public ArrayList<News> loadInBackground() {
-                    ArrayList<News> news = null;
-                    try {
-                        news = TechNetworkUtils.parseJSON();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    @Override
+                    protected void onStartLoading() {
+                        super.onStartLoading();
+                        if (mNewsData != null){
+                            deliverResult(mNewsData);
+                        }else{
+                            forceLoad();
+                            mSwipeRefreshLayout.setRefreshing(true);
+                        }
                     }
-                    return news;
-                }
-            };
+
+                    @Override
+                    public ArrayList<News> loadInBackground() {
+                        String techNewsUrlString = args.getString(TECH_NEWS_QUERY_URL);
+                        if (techNewsUrlString == null){
+                            return null;
+                        }
+                        try {
+//                            URL techNewsUrl = new URL(techNewsUrlString);
+                            return TechNetworkUtils.parseJSON(TECH_NEWS_SOURCE);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    public void deliverResult(ArrayList<News> data) {
+                        mNewsData = data;
+                        super.deliverResult(data);
+                    }
+                };
+            }else{
+                showErrorScreen();
+                return null;
+            }
         }
 
         @Override
         public void onLoadFinished(Loader<ArrayList<News>> loader, ArrayList<News> data) {
-            if (data != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+            if (null == data) {
+                showErrorScreen();
+            } else {
+                mErrorMessage.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
                 if (news != null) {
                     news.clear();
                     news.addAll(data);
-                    if(mNewsAdapter != null) {
-                        mNewsAdapter.notifyDataSetChanged();
-                    }
+                    mNewsAdapter = new NewsAdapter(news);
+                    mRecyclerView.setAdapter(mNewsAdapter);
                 } else {
                     news = data;
                 }
-                mNewsAdapter = new NewsAdapter(news);
-
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(loader.getContext()));
-                mRecyclerView.setAdapter(mNewsAdapter);
-            } else {
-                mErrorMessage.setVisibility(View.VISIBLE);
-                mRecyclerView.setVisibility(View.INVISIBLE);
-                mErrorMessage.setText(getString(R.string.internet_error));
             }
         }
 
         @Override
         public void onLoaderReset(Loader<ArrayList<News>> loader) {
-            loader.forceLoad();
+//            loader.forceLoad();
         }
 
     }

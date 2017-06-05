@@ -18,12 +18,11 @@ import android.widget.TextView;
 
 import com.ire.blogbot.NewsLoader;
 import com.ire.blogbot.activity.MainActivity;
-import com.ire.blogbot.NetworkUtils;
+import com.ire.blogbot.EntertainmentNetworkUtils;
 import com.ire.blogbot.model.News;
 import com.ire.blogbot.NewsAdapter;
 import com.ire.blogbot.R;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -61,8 +60,6 @@ public class EntertainmentNewsFragment extends Fragment {
 
         getLoaderManager().initLoader(ENTERTAINMENT_NEWS_LOADER, sourceBundle, new NewsDataLoader());
 
-//        updateUI();
-
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -91,7 +88,7 @@ public class EntertainmentNewsFragment extends Fragment {
                 mErrorMessage.setVisibility(View.INVISIBLE);
                 mRecyclerView.setVisibility(View.VISIBLE);
 
-                URL entertainmentNewsUrl = NetworkUtils.buildUrl(ENTERTAINMENT_NEWS_SOURCE);
+                URL entertainmentNewsUrl = EntertainmentNetworkUtils.buildUrl(ENTERTAINMENT_NEWS_SOURCE);
                 sourceBundle.putString("source", entertainmentNewsUrl.toString());
             }
         }, 5000);

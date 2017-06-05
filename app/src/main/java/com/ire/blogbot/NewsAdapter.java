@@ -37,13 +37,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 //    Constructor to set the adapter
     public NewsAdapter(ArrayList<News> news){
         mNews = news;
+        notifyDataSetChanged();
     }
 
     @Override
     public NewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_view, parent, false);
-        NewsHolder newsHolder = new NewsHolder(view);
-        return newsHolder;
+        return new NewsHolder(view);
     }
 
     @Override
