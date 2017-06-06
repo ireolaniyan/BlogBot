@@ -31,7 +31,6 @@ import java.util.Random;
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
 public class TechNewsFragment extends Fragment {
-
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mErrorMessage;
     private NewsAdapter mNewsAdapter;
@@ -129,15 +128,13 @@ public class TechNewsFragment extends Fragment {
     }
 
     public class NewsDataLoader implements LoaderManager.LoaderCallbacks<ArrayList<News>> {
-
-
         @Override
         public Loader<ArrayList<News>> onCreateLoader(int id, final Bundle args) {
             if (isConnected()){
                 mErrorMessage.setVisibility(View.INVISIBLE);
                 mRecyclerView.setVisibility(View.VISIBLE);
                 return new AsyncTaskLoader<ArrayList<News>>(getActivity()) {
-                    ArrayList<News> mNewsData = null;
+                    ArrayList<News> mNewsData;
 
                     @Override
                     protected void onStartLoading() {
@@ -152,13 +149,9 @@ public class TechNewsFragment extends Fragment {
 
                     @Override
                     public ArrayList<News> loadInBackground() {
-                        String techNewsUrlString = args.getString(TECH_NEWS_QUERY_URL);
-                        if (techNewsUrlString == null){
-                            return null;
-                        }
                         try {
-//                            URL techNewsUrl = new URL(techNewsUrlString);
-                            return TechNetworkUtils.parseJSON(TECH_NEWS_SOURCE);
+                            ArrayList<News> news = TechNetworkUtils.parseJSON(TECH_NEWS_SOURCE);
+                            return news;
                         } catch (IOException e) {
                             e.printStackTrace();
                             return null;
@@ -185,13 +178,15 @@ public class TechNewsFragment extends Fragment {
                 mErrorMessage.setVisibility(View.INVISIBLE);
                 mRecyclerView.setVisibility(View.VISIBLE);
                 if (news != null) {
-                    news.clear();
+//                    news.clear();
                     news.addAll(data);
                     mNewsAdapter = new NewsAdapter(news);
                     mRecyclerView.setAdapter(mNewsAdapter);
+                    mNewsAdapter.notifyDataSetChanged();
                 } else {
                     news = data;
                 }
+                Log.i(LOG_TAG + "  this is the data", data.toString());        // Array of objects shows in the log
             }
         }
 

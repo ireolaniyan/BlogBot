@@ -37,7 +37,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 //    Constructor to set the adapter
     public NewsAdapter(ArrayList<News> news){
         mNews = news;
-        notifyDataSetChanged();
     }
 
     @Override
