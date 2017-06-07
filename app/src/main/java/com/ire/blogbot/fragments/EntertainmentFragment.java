@@ -1,7 +1,9 @@
 package com.ire.blogbot.fragments;
 
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -182,6 +184,15 @@ public class EntertainmentFragment extends Fragment {
                 } else {
                     news = data;
                 }
+                /*mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
+                    @Override
+                    public void onItemClick(int position, View v) {
+                        News currentNews = news.get(position);
+
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
+                        startActivity(intent);
+                    }
+                });*/
                 Log.i(LOG_TAG + "  this is the data", data.toString());        // Array of objects shows in the log
             }
         }

@@ -20,9 +20,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
 //    Variable used to reference the model
     private ArrayList<News> mNews = new ArrayList<>();
+    private static ClickListener clickListener;
 
 //    NewsHolder class that extends the ViewHolder
-    public static class NewsHolder extends RecyclerView.ViewHolder{
+    public static class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 //        private ImageView mImageView;
         private TextView mNewsTextView;
         private TextView mTimeStampTextView;
@@ -34,6 +35,19 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
             mNewsTextView = (TextView) itemView.findViewById(R.id.news_tv);
             mTimeStampTextView = (TextView) itemView.findViewById(R.id.time_tv);
         }
+
+        @Override
+        public void onClick(View view){
+            clickListener.onItemClick(getAdapterPosition(), view);
+        }
+    }
+
+    public void setOnItemClickListener(ClickListener listener){
+        NewsAdapter.clickListener = listener;
+    }
+
+    public interface ClickListener{
+        void onItemClick(int position, View v);
     }
 
 //    Constructor to set the adapter

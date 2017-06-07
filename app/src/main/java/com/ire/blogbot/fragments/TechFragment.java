@@ -3,6 +3,7 @@ package com.ire.blogbot.fragments;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -63,8 +64,6 @@ public class TechFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-
-
 //        COMPLETED: Change to real data/
 
         getActivity().getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, null, new NewsDataLoader());
@@ -79,8 +78,6 @@ public class TechFragment extends Fragment {
                         R.color.colorPrimaryDark);
             }
         });
-
-
 
         return view;
     }
@@ -129,8 +126,6 @@ public class TechFragment extends Fragment {
     }
 
     public class NewsDataLoader implements LoaderManager.LoaderCallbacks<ArrayList<News>> {
-
-
         @Override
         public Loader<ArrayList<News>> onCreateLoader(int id, final Bundle args) {
             if (isConnected()){
@@ -189,6 +184,15 @@ public class TechFragment extends Fragment {
                 } else {
                     news = data;
                 }
+                mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
+                    @Override
+                    public void onItemClick(int position, View v) {
+                        News currentNews = news.get(position);
+
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
+                        startActivity(intent);
+                    }
+                });
                 Log.i(LOG_TAG + "  this is the data", data.toString());        // Array of objects shows in the log
             }
         }
