@@ -1,5 +1,6 @@
 package com.ire.blogbot.fragments;
 
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -30,7 +31,7 @@ import java.util.Random;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
-public class TechNewsFragment extends Fragment {
+public class TechFragment extends Fragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mErrorMessage;
     private NewsAdapter mNewsAdapter;
@@ -47,7 +48,7 @@ public class TechNewsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
 
-    public TechNewsFragment() {
+    public TechFragment() {
         // Required empty public constructor
     }
 
@@ -61,6 +62,8 @@ public class TechNewsFragment extends Fragment {
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
+
 
 //        COMPLETED: Change to real data/
 
@@ -76,6 +79,8 @@ public class TechNewsFragment extends Fragment {
                         R.color.colorPrimaryDark);
             }
         });
+
+
 
         return view;
     }
@@ -124,6 +129,8 @@ public class TechNewsFragment extends Fragment {
     }
 
     public class NewsDataLoader implements LoaderManager.LoaderCallbacks<ArrayList<News>> {
+
+
         @Override
         public Loader<ArrayList<News>> onCreateLoader(int id, final Bundle args) {
             if (isConnected()){
@@ -166,7 +173,7 @@ public class TechNewsFragment extends Fragment {
         }
 
         @Override
-        public void onLoadFinished(Loader<ArrayList<News>> loader, ArrayList<News> data) {
+        public void onLoadFinished(Loader<ArrayList<News>> loader, final ArrayList<News> data) {
             mSwipeRefreshLayout.setRefreshing(false);
             if (null == data) {
                 showErrorScreen();
@@ -174,7 +181,7 @@ public class TechNewsFragment extends Fragment {
                 mErrorMessage.setVisibility(View.INVISIBLE);
                 mRecyclerView.setVisibility(View.VISIBLE);
                 if (news != null) {
-//                    news.clear();
+                    news.clear();
                     news.addAll(data);
                     mNewsAdapter = new NewsAdapter(news);
                     mRecyclerView.setAdapter(mNewsAdapter);

@@ -17,9 +17,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        TODO: SwipeRefresh layout
+//        COMPLETED: SwipeRefresh layout
 //        COMPLETED: View pager - tech and gist
+//        TODO: Convert time to readable text
+//        TODO: Change font of BlogBot and tab titles
 //        TODO: Open link after list click
+//        TODO: add additional urls
 //        TODO: add images of news
 //        TODO: Show * notification on viewpager titles
 

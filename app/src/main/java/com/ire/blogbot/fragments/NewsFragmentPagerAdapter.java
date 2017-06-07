@@ -20,9 +20,9 @@ public class NewsFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new EntertainmentNewsFragment();
+                return new EntertainmentFragment();
             case 1:
-                return new TechNewsFragment();
+                return new TechFragment();
             default:
                 return null;
         }

@@ -5,19 +5,12 @@ package com.ire.blogbot.model;
  */
 
 public class News {
-    private String mNews;
-    private String mTime;
-//    private String mImageUrl;
+    private String mNews, mTime, mUrl, mImageUrl;
 
-    /*public News(String news, String time, String imageUrl){
+    public News(String news, String time, String url){
         mNews = news;
         mTime = time;
-        mImageUrl = imageUrl;
-     }*/
-
-    public News(String news, String time){
-        mNews = news;
-        mTime = time;
+        mUrl = url;
     }
 
     public String getNews() {
@@ -26,6 +19,10 @@ public class News {
 
     public String getTime() {
         return mTime;
+    }
+
+    public String getUrl() {
+        return mUrl;
     }
 
 //    public String getImageUrl() {

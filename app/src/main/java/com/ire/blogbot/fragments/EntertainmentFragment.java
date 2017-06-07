@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,19 +17,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ire.blogbot.NewsLoader;
 import com.ire.blogbot.activity.MainActivity;
 import com.ire.blogbot.utils.EntertainmentNetworkUtils;
 import com.ire.blogbot.model.News;
 import com.ire.blogbot.NewsAdapter;
 import com.ire.blogbot.R;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
-public class EntertainmentNewsFragment extends Fragment {
+public class EntertainmentFragment extends Fragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mErrorMessage;
     ArrayList<News> news;
@@ -38,12 +40,13 @@ public class EntertainmentNewsFragment extends Fragment {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private static final String ENTERTAINMENT_NEWS_QUERY_URL = "query";
     private static final String ENTERTAINMENT_NEWS_SOURCE = "entertainment-weekly";
     private static final int ENTERTAINMENT_NEWS_LOADER = 21;
 
     private RecyclerView mRecyclerView;
 
-    public EntertainmentNewsFragment() {
+    public EntertainmentFragment() {
         // Required empty public constructor
     }
 
@@ -56,17 +59,20 @@ public class EntertainmentNewsFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_main);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
 
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
 //        COMPLETED: Change to real data
 
-        getLoaderManager().initLoader(ENTERTAINMENT_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+        getActivity().getSupportLoaderManager().initLoader(ENTERTAINMENT_NEWS_LOADER, null, new NewsDataLoader());
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.v(LOG_TAG, "Refreshing");
-//                updateUI();
-                getLoaderManager().restartLoader(ENTERTAINMENT_NEWS_LOADER, sourceBundle, new NewsDataLoader());
-//                getSupportLoaderManager().restartLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
+                restartLoader();
+                mSwipeRefreshLayout.setColorSchemeResources(
+                        R.color.colorPrimary,
+                        R.color.colorPrimaryDark);
             }
         });
         return view;
@@ -81,15 +87,28 @@ public class EntertainmentNewsFragment extends Fragment {
         return info != null && info.isConnectedOrConnecting();
     }
 
-    public void updateUI() {
+    private int anyRandomInt(Random random) {
+        return random.nextInt();
+    }
+
+    private void restartLoader() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mErrorMessage.setVisibility(View.INVISIBLE);
-                mRecyclerView.setVisibility(View.VISIBLE);
-
                 URL entertainmentNewsUrl = EntertainmentNetworkUtils.buildUrl(ENTERTAINMENT_NEWS_SOURCE);
-                sourceBundle.putString("source", entertainmentNewsUrl.toString());
+                sourceBundle.putString(ENTERTAINMENT_NEWS_QUERY_URL, entertainmentNewsUrl.toString());
+
+                Random random = new Random();
+                int uniqueId = anyRandomInt(random); //Generates a new ID for each loader call;
+
+                LoaderManager loaderManager = getActivity().getSupportLoaderManager();
+
+                if (loaderManager.getLoader(ENTERTAINMENT_NEWS_LOADER) == null) {
+                    loaderManager.initLoader(uniqueId, sourceBundle, new NewsDataLoader());
+                } else {
+                    loaderManager.restartLoader(ENTERTAINMENT_NEWS_LOADER, sourceBundle, new
+                            NewsDataLoader());
+                }
             }
         }, 5000);
         mSwipeRefreshLayout.setRefreshing(false);
@@ -108,37 +127,68 @@ public class EntertainmentNewsFragment extends Fragment {
         @Override
         public Loader<ArrayList<News>> onCreateLoader(int id, final Bundle args) {
             if (isConnected()){
-                updateUI();
-                return new NewsLoader(getActivity(), args);
+                mErrorMessage.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+                return new AsyncTaskLoader<ArrayList<News>>(getActivity()) {
+                    ArrayList<News> mNewsData;
+
+                    @Override
+                    protected void onStartLoading() {
+                        super.onStartLoading();
+                        if (mNewsData != null){
+                            deliverResult(mNewsData);
+                        }else{
+                            forceLoad();
+                            mSwipeRefreshLayout.setRefreshing(true);
+                        }
+                    }
+
+                    @Override
+                    public ArrayList<News> loadInBackground() {
+                        try {
+                            ArrayList<News> news = EntertainmentNetworkUtils.parseJSON(ENTERTAINMENT_NEWS_SOURCE);
+                            return news;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    public void deliverResult(ArrayList<News> data) {
+                        mNewsData = data;
+                        super.deliverResult(data);
+                    }
+                };
+            }else{
+                showErrorScreen();
+                return null;
             }
-            showErrorScreen();
-            return null;
         }
 
         @Override
         public void onLoadFinished(Loader<ArrayList<News>> loader, ArrayList<News> data) {
-            if (data != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+            if (null == data) {
+                showErrorScreen();
+            } else {
+                mErrorMessage.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
                 if (news != null) {
                     news.clear();
                     news.addAll(data);
-                    if(mNewsAdapter != null) {
-                        mNewsAdapter.notifyDataSetChanged();
-                    }
+                    mNewsAdapter = new NewsAdapter(news);
+                    mRecyclerView.setAdapter(mNewsAdapter);
+                    mNewsAdapter.notifyDataSetChanged();
                 } else {
                     news = data;
                 }
-                mNewsAdapter = new NewsAdapter(news);
-
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(loader.getContext()));
-                mRecyclerView.setAdapter(mNewsAdapter);
-            } else {
-                showErrorScreen();
+                Log.i(LOG_TAG + "  this is the data", data.toString());        // Array of objects shows in the log
             }
         }
 
         @Override
         public void onLoaderReset(Loader<ArrayList<News>> loader) {
-            loader.forceLoad();
+//            loader.forceLoad();
         }
 
     }
