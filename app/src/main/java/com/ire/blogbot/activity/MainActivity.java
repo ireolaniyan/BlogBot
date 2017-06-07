@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        TODO: SwipeRefresh layout
 //        COMPLETED: View pager - tech and gist
-//        TODO: Open link after list click event
+//        TODO: Open link after list click
 //        TODO: add images of news
 //        TODO: Show * notification on viewpager titles
 

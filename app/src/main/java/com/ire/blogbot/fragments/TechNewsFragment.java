@@ -21,7 +21,7 @@ import com.ire.blogbot.activity.MainActivity;
 import com.ire.blogbot.model.News;
 import com.ire.blogbot.NewsAdapter;
 import com.ire.blogbot.R;
-import com.ire.blogbot.TechNetworkUtils;
+import com.ire.blogbot.utils.TechNetworkUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,7 +47,6 @@ public class TechNewsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
 
-
     public TechNewsFragment() {
         // Required empty public constructor
     }
@@ -62,7 +61,6 @@ public class TechNewsFragment extends Fragment {
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-
 
 //        COMPLETED: Change to real data/
 
@@ -104,8 +102,6 @@ public class TechNewsFragment extends Fragment {
 
                 Random random = new Random();
                 int uniqueId = anyRandomInt(random); //Generates a new ID for each loader call;
-
-//                    sourceBundle.putString("query", s);]
 
                 LoaderManager loaderManager = getActivity().getSupportLoaderManager();
 

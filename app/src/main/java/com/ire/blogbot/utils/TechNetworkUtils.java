@@ -1,4 +1,4 @@
-package com.ire.blogbot;
+package com.ire.blogbot.utils;
 
 import android.net.Uri;
 import android.util.Log;
@@ -20,15 +20,15 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by ire on 6/1/17.
+ * Created by ire on 5/27/17.
  */
 
-public class EntertainmentNetworkUtils {
+public class TechNetworkUtils {
+
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    /*public static ArrayList<News> parseJSON(String source) throws IOException {
-//        URL url = buildUrl(source);
-        URL url = buildUrl();
+    public static ArrayList<News> parseJSON(String source) throws IOException {
+        URL url = buildUrl(source);
         String jsonResult = getResponseFromHttpUrl(url);
 
         ArrayList<News> news = new ArrayList<>();
@@ -44,68 +44,8 @@ public class EntertainmentNetworkUtils {
 //                    String image = article.getString("urlToImage");
                     String time = article.getString("publishedAt");
                     news.add(new News(title, time));
-                }
-            }
-
-        }catch (JSONException | NullPointerException e){
-            e.printStackTrace();
-            return null;
-        }
-        return news;
-    }*/
-
-//    Builds the tech news url
-  /*  public static URL buildUrl(String techNewsSource){
-        final String TECH_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
-        final String PARAM_SOURCE = "source";
-        final String SOURCE = "techcrunch";
-        final String PARAM_SORT_BY = "sortBy";
-        final String latest = "latest";
-        final String PARAM_API_KEY = "apiKey";
-        final String KEY = "3431d57e51a04c1d967e2eb96c99fd1a";
-
-        Uri builtUri = Uri.parse(TECH_NEWS_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_SOURCE, techNewsSource)
-                .appendQueryParameter(PARAM_SORT_BY, latest)
-                .appendQueryParameter(PARAM_API_KEY, KEY)
-                .build();
-
-        Log.i(LOG_TAG, builtUri.toString());
-
-        URL url = null;
-        try{
-            url = new URL(builtUri.toString());
-        }catch (MalformedURLException e){
-            e.printStackTrace();
-        }
-        return url;
-    }*/
-
-
-    public static ArrayList<News> parseJSON(String source) throws IOException {
-        URL url = buildUrl(source);
-        String jsonResult = getResponseFromHttpUrl(url);
-        String time = "";
-
-        Log.i(LOG_TAG, jsonResult);
-
-        ArrayList<News> news = new ArrayList<>();
-
-        try{
-            JSONObject jsonObject = new JSONObject(jsonResult);
-            JSONArray jsonArray = jsonObject.getJSONArray("articles");
-
-            if (jsonArray != null){
-                for (int i = 0; i < jsonArray.length(); i++){
-                    JSONObject article = jsonArray.getJSONObject(i);
-                    String title = article.getString("title");
-//                    String image = article.getString("urlToImage");
-                    if (article.getString("publishedAt") != null){
-                        time = article.getString("publishedAt");
-                    }else{
-                        return null;
-                    }
-                    news.add(new News(title, time));
+                    Log.i(LOG_TAG, title);
+                    Log.i(LOG_TAG, time);
                 }
             }
 
@@ -116,20 +56,18 @@ public class EntertainmentNetworkUtils {
         return news;
     }
 
-    //    https://newsapi.org/v1/articles?source=entertainment-weekly&sortBy=top&apiKey=3431d57e51a04c1d967e2eb96c99fd1a
-
-    public static URL buildUrl(String entertainmentNewsSource){
-        final String ENTERTAINMENT_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
+//    Builds the tech news url
+    public static URL buildUrl(String techNewsSource){
+        final String TECH_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
         final String PARAM_SOURCE = "source";
-//        final String ENTERTAINMENT_NEWS_SOURCE = "entertainment-weekly";
         final String PARAM_SORT_BY = "sortBy";
-        final String top = "top";
+        final String latest = "latest";
         final String PARAM_API_KEY = "apiKey";
         final String KEY = "3431d57e51a04c1d967e2eb96c99fd1a";
 
-        Uri builtUri = Uri.parse(ENTERTAINMENT_NEWS_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_SOURCE, entertainmentNewsSource)
-                .appendQueryParameter(PARAM_SORT_BY, top)
+        Uri builtUri = Uri.parse(TECH_NEWS_BASE_URL).buildUpon()
+                .appendQueryParameter(PARAM_SOURCE, techNewsSource)
+                .appendQueryParameter(PARAM_SORT_BY, latest)
                 .appendQueryParameter(PARAM_API_KEY, KEY)
                 .build();
 
@@ -158,8 +96,8 @@ public class EntertainmentNetworkUtils {
 
         try{
             urlConnection = (HttpURLConnection) url.openConnection();
-//            urlConnection.setReadTimeout(15000);
-//            urlConnection.setConnectTimeout(10000);
+            urlConnection.setReadTimeout(15000);
+            urlConnection.setConnectTimeout(10000);
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoOutput(false);
             urlConnection.setDoInput(true);

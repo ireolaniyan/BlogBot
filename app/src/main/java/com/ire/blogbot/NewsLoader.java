@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.ire.blogbot.model.News;
+import com.ire.blogbot.utils.EntertainmentNetworkUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

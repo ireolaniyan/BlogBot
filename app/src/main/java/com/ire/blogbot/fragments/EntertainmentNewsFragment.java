@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.ire.blogbot.NewsLoader;
 import com.ire.blogbot.activity.MainActivity;
-import com.ire.blogbot.EntertainmentNetworkUtils;
+import com.ire.blogbot.utils.EntertainmentNetworkUtils;
 import com.ire.blogbot.model.News;
 import com.ire.blogbot.NewsAdapter;
 import com.ire.blogbot.R;
