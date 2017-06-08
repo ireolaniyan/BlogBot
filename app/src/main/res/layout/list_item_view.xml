@@ -1,45 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:padding="8dp">
 
-   <!-- <ImageView
+    <ImageView
         android:layout_width="56dp"
         android:layout_height="64dp"
         android:scaleType="fitCenter"
         android:id="@+id/simple_imageView"
-        android:contentDescription="News Image"/>  -->
+        android:contentDescription="News Image"/>
 
-    <!-- android:layout_toRightOf="@id/simple_imageView"
-           android:layout_toEndOf="@id/simple_imageView" -->
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/title_frame">
 
-        <TextView
-            android:padding="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:id="@+id/news_tv"
-            tools:text="Get exciting news here"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/news_tv"
+        tools:text="Get exciting news here"
+        android:layout_toRightOf="@id/simple_imageView"
+        android:layout_toEndOf="@id/simple_imageView"/>
 
-</FrameLayout>
-<FrameLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="end">
+    <TextView
+        android:id="@+id/time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        tools:text="12:00pm"
+        android:layout_alignBottom="@id/simple_imageView"
+        android:layout_marginLeft="312dp"
+        android:layout_marginStart="312dp" />
 
-        <TextView
-            android:id="@+id/time_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:paddingRight="16dp"
-            tools:text="12:00pm"/>
-</FrameLayout>
-
-</LinearLayout>
+</RelativeLayout>

@@ -43,14 +43,14 @@ public class EntertainmentNetworkUtils {
                 for (int i = 0; i < jsonArray.length(); i++){
                     JSONObject article = jsonArray.getJSONObject(i);
                     String title = article.getString("title");
-//                    String image = article.getString("urlToImage");
-                    String detailUrl = article.getString("url");
+                    String image = article.getString("urlToImage");
+//                    String detailUrl = article.getString("url");
                     if (article.getString("publishedAt") != null){
                         time = article.getString("publishedAt");
                     }else{
                         return null;
                     }
-                    news.add(new News(title, time, detailUrl));
+                    news.add(new News(title, time, image));
                 }
             }
 

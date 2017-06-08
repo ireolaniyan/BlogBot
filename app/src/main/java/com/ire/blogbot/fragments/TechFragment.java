@@ -184,7 +184,7 @@ public class TechFragment extends Fragment {
                 } else {
                     news = data;
                 }
-                mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
+              /*  mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
                     @Override
                     public void onItemClick(int position, View v) {
                         News currentNews = news.get(position);
@@ -192,7 +192,7 @@ public class TechFragment extends Fragment {
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
                         startActivity(intent);
                     }
-                });
+                });*/
                 Log.i(LOG_TAG + "  this is the data", data.toString());        // Array of objects shows in the log
             }
         }

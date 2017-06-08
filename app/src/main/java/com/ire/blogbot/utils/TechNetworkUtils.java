@@ -41,10 +41,10 @@ public class TechNetworkUtils {
                 for (int i = 0; i < jsonArray.length(); i++){
                     JSONObject article = jsonArray.getJSONObject(i);
                     String title = article.getString("title");
-//                    String image = article.getString("urlToImage");
-                    String detailUrl = article.getString("url");
+                    String image = article.getString("urlToImage");
+//                    String detailUrl = article.getString("url");
                     String time = article.getString("publishedAt");
-                    news.add(new News(title, time, detailUrl));
+                    news.add(new News(title, time, image));
                     Log.i(LOG_TAG, title);
                     Log.i(LOG_TAG, time);
                 }

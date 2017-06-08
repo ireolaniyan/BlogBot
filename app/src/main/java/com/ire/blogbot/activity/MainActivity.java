@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 //        TODO: Change font of BlogBot and tab titles
 //        TODO: Open link after list click
 //        TODO: add additional urls
-//        TODO: add images of news
+//        COMPLETED: add images of news
 //        TODO: Show * notification on viewpager titles
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);

@@ -7,10 +7,17 @@ package com.ire.blogbot.model;
 public class News {
     private String mNews, mTime, mUrl, mImageUrl;
 
-    public News(String news, String time, String url){
+  /*  public News(String news, String time, String url, String imageUrl){
         mNews = news;
         mTime = time;
         mUrl = url;
+        mImageUrl = imageUrl;
+    }*/
+
+    public News(String news, String time, String imageUrl){
+        mNews = news;
+        mTime = time;
+        mImageUrl = imageUrl;
     }
 
     public String getNews() {
@@ -21,13 +28,13 @@ public class News {
         return mTime;
     }
 
-    public String getUrl() {
-        return mUrl;
-    }
-
-//    public String getImageUrl() {
-//        return mImageUrl;
+//    public String getUrl() {
+//        return mUrl;
 //    }
+
+    public String getImageUrl() {
+        return mImageUrl;
+    }
 
 //    COMPLETED: Remove fake model
 }
