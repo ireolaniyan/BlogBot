@@ -1,6 +1,5 @@
 package com.ire.blogbot;
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +8,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ire.blogbot.model.News;
-import com.ire.blogbot.utils.TechNetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ire on 5/23/17.
@@ -24,10 +27,37 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     private ArrayList<News> mNews = new ArrayList<>();
     private static ClickListener clickListener;
 
-
 //    Setting the adapter
     public NewsAdapter(ArrayList<News> news) {
         mNews = news;
+    }
+
+    private static String timeConverter(String inputTime){
+        long startTime = 0;
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        simpleDate.setTimeZone(TimeZone.getTimeZone("GMT"));
+        try {
+            Date date = simpleDate.parse(inputTime);
+            startTime = date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        long currentTime = System.currentTimeMillis();
+
+        long end = currentTime - startTime;
+
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(end);
+        long minutes = TimeUnit.SECONDS.toMinutes(seconds);
+        long hours = TimeUnit.MINUTES.toHours(minutes);
+
+        if (minutes > 59){
+            return hours + "h";
+        }else if (seconds > 59){
+            return minutes + "m";
+        }else  {
+            return seconds + "s";
+        }
     }
 
     @Override
@@ -42,7 +72,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         Picasso.with(holder.mImageView.getContext()).load(imagePath).into(holder.mImageView);
 
         holder.mNewsTextView.setText(mNews.get(position).getNews());
-        holder.mTimeStampTextView.setText(mNews.get(position).getTime());
+        holder.mTimeStampTextView.setText(timeConverter(mNews.get(position).getTime()));
     }
 
     @Override
