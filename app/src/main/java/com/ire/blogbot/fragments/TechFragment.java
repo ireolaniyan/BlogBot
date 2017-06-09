@@ -122,6 +122,7 @@ public class TechFragment extends Fragment {
     private void showErrorScreen(){
         mErrorMessage.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
+//        TODO: make text more fancy and put apostrophe
         mErrorMessage.setText(getString(R.string.internet_error));
     }
 
@@ -184,7 +185,7 @@ public class TechFragment extends Fragment {
                 } else {
                     news = data;
                 }
-              /*  mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
+                /*mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
                     @Override
                     public void onItemClick(int position, View v) {
                         News currentNews = news.get(position);
@@ -193,7 +194,6 @@ public class TechFragment extends Fragment {
                         startActivity(intent);
                     }
                 });*/
-                Log.i(LOG_TAG + "  this is the data", data.toString());        // Array of objects shows in the log
             }
         }
 

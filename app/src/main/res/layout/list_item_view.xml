@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:padding="8dp">
+    android:padding="2dp">
 
     <ImageView
         android:layout_width="56dp"
@@ -24,9 +24,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/news_tv"
         tools:text="Get exciting news here"
-        android:paddingLeft="8dp"
         android:layout_toRightOf="@id/simple_imageView"
-        android:layout_toEndOf="@id/simple_imageView"/>
+        android:layout_toEndOf="@id/simple_imageView"
+        android:paddingLeft="8dp"/>
 
     <TextView
         android:id="@+id/time_tv"

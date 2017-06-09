@@ -193,7 +193,6 @@ public class EntertainmentFragment extends Fragment {
                         startActivity(intent);
                     }
                 });*/
-                Log.i(LOG_TAG + "  this is the data", data.toString());        // Array of objects shows in the log
             }
         }
 

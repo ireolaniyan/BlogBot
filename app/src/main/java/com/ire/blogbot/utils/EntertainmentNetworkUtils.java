@@ -31,8 +31,6 @@ public class EntertainmentNetworkUtils {
         String jsonResult = getResponseFromHttpUrl(url);
         String time = "";
 
-        Log.i(LOG_TAG, jsonResult);
-
         ArrayList<News> news = new ArrayList<>();
 
         try{
@@ -44,13 +42,13 @@ public class EntertainmentNetworkUtils {
                     JSONObject article = jsonArray.getJSONObject(i);
                     String title = article.getString("title");
                     String image = article.getString("urlToImage");
-//                    String detailUrl = article.getString("url");
+                    String detailUrl = article.getString("url");
                     if (article.getString("publishedAt") != null){
                         time = article.getString("publishedAt");
                     }else{
                         return null;
                     }
-                    news.add(new News(title, time, image));
+                    news.add(new News(title, time, detailUrl, image));
                 }
             }
 
