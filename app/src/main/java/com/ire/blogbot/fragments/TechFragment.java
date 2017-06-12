@@ -21,9 +21,9 @@ import android.widget.TextView;
 
 import com.ire.blogbot.activity.MainActivity;
 import com.ire.blogbot.model.News;
-import com.ire.blogbot.NewsAdapter;
+import com.ire.blogbot.adapter.NewsAdapter;
 import com.ire.blogbot.R;
-import com.ire.blogbot.utils.TechNetworkUtils;
+import com.ire.blogbot.utils.NetworkUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,13 +38,14 @@ public class TechFragment extends Fragment {
     private NewsAdapter mNewsAdapter;
     ArrayList<News> news;
     NetworkInfo info;
-    //    The Loader takes in a bundle
+    //  5uu  The Loader takes in a bundle
     Bundle sourceBundle = new Bundle();
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private static final String TECH_NEWS_QUERY_URL = "query";
     private static final String TECH_NEWS_SOURCE = "techcrunch";
+    private static final String TECH_SOURCE_CATEGORY = "latest";
     private static final int TECH_NEWS_LOADER = 22;
 
     private RecyclerView mRecyclerView;
@@ -62,11 +63,11 @@ public class TechFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_main);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
 //        COMPLETED: Change to real data/
 
-        getActivity().getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, null, new NewsDataLoader());
+        getActivity().getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -99,7 +100,7 @@ public class TechFragment extends Fragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                URL techNewsUrl = TechNetworkUtils.buildUrl(TECH_NEWS_SOURCE);
+                URL techNewsUrl = NetworkUtils.buildUrl(TECH_NEWS_SOURCE, TECH_SOURCE_CATEGORY);
                 sourceBundle.putString(TECH_NEWS_QUERY_URL, techNewsUrl.toString());
 
                 Random random = new Random();
@@ -149,7 +150,7 @@ public class TechFragment extends Fragment {
                     @Override
                     public ArrayList<News> loadInBackground() {
                         try {
-                            ArrayList<News> news = TechNetworkUtils.parseJSON(TECH_NEWS_SOURCE);
+                            ArrayList<News> news = NetworkUtils.parseJSON(TECH_NEWS_SOURCE, TECH_SOURCE_CATEGORY);
                             return news;
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -171,7 +172,7 @@ public class TechFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<ArrayList<News>> loader, final ArrayList<News> data) {
             mSwipeRefreshLayout.setRefreshing(false);
-            if (null == data) {
+          /*  if (null == data) {
                 showErrorScreen();
             } else {
                 mErrorMessage.setVisibility(View.INVISIBLE);
@@ -181,19 +182,39 @@ public class TechFragment extends Fragment {
                     news.addAll(data);
                     mNewsAdapter = new NewsAdapter(news);
                     mRecyclerView.setAdapter(mNewsAdapter);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                     mNewsAdapter.notifyDataSetChanged();
                 } else {
                     news = data;
                 }
-                /*mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
-                    @Override
-                    public void onItemClick(int position, View v) {
-                        News currentNews = news.get(position);
+            }
+            mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
+                @Override
+                public void onItemClick(int position, View v) {
+                    News currentNews = news.get(position);
 
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
-                        startActivity(intent);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
+                    startActivity(intent);
+                }
+            });*/
+
+
+            if (data != null) {
+                if (news != null) {
+                    news.clear();
+                    news.addAll(data);
+                    if (mNewsAdapter != null) {
+                        mNewsAdapter.notifyDataSetChanged();
                     }
-                });*/
+                } else {
+                    news = data;
+                }
+                mNewsAdapter = new NewsAdapter(news);
+
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                mRecyclerView.setAdapter(mNewsAdapter);
+            } else {
+                showErrorScreen();
             }
         }
 

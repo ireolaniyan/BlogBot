@@ -1,9 +1,7 @@
 package com.ire.blogbot.fragments;
 
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -20,9 +18,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ire.blogbot.activity.MainActivity;
-import com.ire.blogbot.utils.EntertainmentNetworkUtils;
+import com.ire.blogbot.utils.NetworkUtils;
 import com.ire.blogbot.model.News;
-import com.ire.blogbot.NewsAdapter;
+import com.ire.blogbot.adapter.NewsAdapter;
 import com.ire.blogbot.R;
 
 import java.io.IOException;
@@ -44,6 +42,7 @@ public class EntertainmentFragment extends Fragment {
 
     private static final String ENTERTAINMENT_NEWS_QUERY_URL = "query";
     private static final String ENTERTAINMENT_NEWS_SOURCE = "entertainment-weekly";
+    private static final String ENTERTAINMENT_SOURCE_CATEGORY = "top";
     private static final int ENTERTAINMENT_NEWS_LOADER = 21;
 
     private RecyclerView mRecyclerView;
@@ -97,7 +96,7 @@ public class EntertainmentFragment extends Fragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                URL entertainmentNewsUrl = EntertainmentNetworkUtils.buildUrl(ENTERTAINMENT_NEWS_SOURCE);
+                URL entertainmentNewsUrl = NetworkUtils.buildUrl(ENTERTAINMENT_NEWS_SOURCE, ENTERTAINMENT_SOURCE_CATEGORY);
                 sourceBundle.putString(ENTERTAINMENT_NEWS_QUERY_URL, entertainmentNewsUrl.toString());
 
                 Random random = new Random();
@@ -148,7 +147,7 @@ public class EntertainmentFragment extends Fragment {
                     @Override
                     public ArrayList<News> loadInBackground() {
                         try {
-                            ArrayList<News> news = EntertainmentNetworkUtils.parseJSON(ENTERTAINMENT_NEWS_SOURCE);
+                            ArrayList<News> news = NetworkUtils.parseJSON(ENTERTAINMENT_NEWS_SOURCE, ENTERTAINMENT_SOURCE_CATEGORY);
                             return news;
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -170,7 +169,7 @@ public class EntertainmentFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<ArrayList<News>> loader, ArrayList<News> data) {
             mSwipeRefreshLayout.setRefreshing(false);
-            if (null == data) {
+    /*        if (null == data) {
                 showErrorScreen();
             } else {
                 mErrorMessage.setVisibility(View.INVISIBLE);
@@ -180,27 +179,46 @@ public class EntertainmentFragment extends Fragment {
                     news.addAll(data);
                     mNewsAdapter = new NewsAdapter(news);
                     mRecyclerView.setAdapter(mNewsAdapter);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                     mNewsAdapter.notifyDataSetChanged();
                 } else {
                     news = data;
-                }
-                /*mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
-                    @Override
-                    public void onItemClick(int position, View v) {
-                        News currentNews = news.get(position);
-
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
-                        startActivity(intent);
+                }*/
+            if (data != null) {
+                mErrorMessage.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+                if (news != null) {
+                    news.clear();
+                    news.addAll(data);
+                    if (mNewsAdapter != null) {
+                        mNewsAdapter.notifyDataSetChanged();
                     }
-                });*/
+                } else {
+                    news = data;
+                }
+                mNewsAdapter = new NewsAdapter(news);
+
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                mRecyclerView.setAdapter(mNewsAdapter);
+            } else {
+                showErrorScreen();
             }
+           /* mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
+                @Override
+                public void onItemClick(int position, View v) {
+                    News currentNews = news.get(position);
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
+                    startActivity(intent);
+                }
+            });*/
+
         }
 
         @Override
         public void onLoaderReset(Loader<ArrayList<News>> loader) {
-//            loader.forceLoad();
-        }
 
+        }
     }
 
 }

@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.ire.blogbot.model.News;
 import com.ire.blogbot.activity.MainActivity;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,16 +20,16 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by ire on 5/27/17.
+ * Created by ire on 6/1/17.
  */
 
-public class TechNetworkUtils {
-
+public class NetworkUtils {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    public static ArrayList<News> parseJSON(String source) throws IOException {
-        URL url = buildUrl(source);
+    public static ArrayList<News> parseJSON(String source, String category) throws IOException {
+        URL url = buildUrl(source, category);
         String jsonResult = getResponseFromHttpUrl(url);
+        String time = "";
 
         ArrayList<News> news = new ArrayList<>();
 
@@ -44,9 +43,13 @@ public class TechNetworkUtils {
                     String title = article.getString("title");
                     String image = article.getString("urlToImage");
                     String detailUrl = article.getString("url");
-                    String time = article.getString("publishedAt");
+                    time = article.getString("publishedAt");
+                  /*  if (article.getString("publishedAt") != null){
+                        time = article.getString("publishedAt");
+                    }else{
+                        return null;
+                    }*/
                     news.add(new News(title, time, detailUrl, image));
-                    Log.i(LOG_TAG, time);
                 }
             }
 
@@ -56,19 +59,18 @@ public class TechNetworkUtils {
         }
         return news;
     }
-
-//    Builds the tech news url
-    public static URL buildUrl(String techNewsSource){
-        final String TECH_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
+    //    https://newsapi.org/v1/articles?source=entertainment-weekly&sortBy=top&apiKey=3431d57e51a04c1d967e2eb96c99fd1a
+    public static URL buildUrl(String entertainmentNewsSource, String category){
+        final String ENTERTAINMENT_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
         final String PARAM_SOURCE = "source";
         final String PARAM_SORT_BY = "sortBy";
-        final String latest = "latest";
+//        final String top = "top";
         final String PARAM_API_KEY = "apiKey";
         final String KEY = "3431d57e51a04c1d967e2eb96c99fd1a";
 
-        Uri builtUri = Uri.parse(TECH_NEWS_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_SOURCE, techNewsSource)
-                .appendQueryParameter(PARAM_SORT_BY, latest)
+        Uri builtUri = Uri.parse(ENTERTAINMENT_NEWS_BASE_URL).buildUpon()
+                .appendQueryParameter(PARAM_SOURCE, entertainmentNewsSource)
+                .appendQueryParameter(PARAM_SORT_BY, category)
                 .appendQueryParameter(PARAM_API_KEY, KEY)
                 .build();
 

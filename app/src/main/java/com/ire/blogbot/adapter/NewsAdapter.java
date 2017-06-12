@@ -1,5 +1,7 @@
-package com.ire.blogbot;
+package com.ire.blogbot.adapter;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ire.blogbot.R;
 import com.ire.blogbot.model.News;
 import com.squareup.picasso.Picasso;
 
@@ -16,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+
+import static android.support.v4.content.ContextCompat.startActivity;
 
 /**
  * Created by ire on 5/23/17.
@@ -32,7 +37,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         mNews = news;
     }
 
-    private static String timeConverter(String inputTime){
+    private static String timeConverter(String inputTime) {
         long startTime = 0;
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         simpleDate.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -51,11 +56,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         long minutes = TimeUnit.SECONDS.toMinutes(seconds);
         long hours = TimeUnit.MINUTES.toHours(minutes);
 
-        if (minutes > 59){
+        if (minutes > 59) {
             return hours + "h";
-        }else if (seconds > 59){
+        }else if (seconds > 59) {
             return minutes + "m";
-        }else  {
+        }else {
             return seconds + "s";
         }
     }
@@ -81,32 +86,44 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     }
 
     //    NewsHolder class that extends the ViewHolder
-    public static class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mImageView;
         private TextView mNewsTextView;
         private TextView mTimeStampTextView;
-        private String mDetailUrl;
-//
+
         //   Setting the views
-        public NewsHolder(View itemView){
+        public NewsHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.simple_imageView);
             mNewsTextView = (TextView) itemView.findViewById(R.id.news_tv);
             mTimeStampTextView = (TextView) itemView.findViewById(R.id.time_tv);
         }
 
+       /* @Override
+        public void onClick(View v) {
+
+            startActivity(intent);
+        }
+
+        private void startActivity(Intent intent) {
+            News currentNews = news.get(getItemId());
+
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
+        }
+*/
         @Override
-        public void onClick(View view){
-            clickListener.onItemClick(getAdapterPosition(), view);
+        public void onClick(View view) {
+            clickListener.onClick(getAdapterPosition(), view);
         }
     }
 
-    public void setOnItemClickListener(ClickListener listener){
+    public void setOnItemClickListener(ClickListener listener) {
         NewsAdapter.clickListener = listener;
     }
 
-    public interface ClickListener{
-        void onItemClick(int position, View v);
+    public interface ClickListener {
+        void onClick(int position, View v);
     }
 
 }

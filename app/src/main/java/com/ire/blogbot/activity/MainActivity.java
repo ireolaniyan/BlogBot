@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        COMPLETED: SwipeRefresh layout
 //        COMPLETED: View pager - tech and gist
-//        TODO: Convert time to readable text
+//        COMPLETED: Convert time to readable text
 //        TODO: Change font of BlogBot and tab titles
 //        TODO: Open link after list click
 //        TODO: add additional urls
@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         NewsFragmentPagerAdapter newsFragmentPagerAdapter = new NewsFragmentPagerAdapter(getSupportFragmentManager(), this);
+
+
 
         viewPager.setAdapter(newsFragmentPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
