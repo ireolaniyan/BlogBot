@@ -29,7 +29,6 @@ public class NetworkUtils {
     public static ArrayList<News> parseJSON(String source, String category) throws IOException {
         URL url = buildUrl(source, category);
         String jsonResult = getResponseFromHttpUrl(url);
-        String time = "";
 
         ArrayList<News> news = new ArrayList<>();
 
@@ -43,12 +42,7 @@ public class NetworkUtils {
                     String title = article.getString("title");
                     String image = article.getString("urlToImage");
                     String detailUrl = article.getString("url");
-                    time = article.getString("publishedAt");
-                  /*  if (article.getString("publishedAt") != null){
-                        time = article.getString("publishedAt");
-                    }else{
-                        return null;
-                    }*/
+                    String time = article.getString("publishedAt");
                     news.add(new News(title, time, detailUrl, image));
                 }
             }
@@ -59,12 +53,11 @@ public class NetworkUtils {
         }
         return news;
     }
-    //    https://newsapi.org/v1/articles?source=entertainment-weekly&sortBy=top&apiKey=3431d57e51a04c1d967e2eb96c99fd1a
+
     public static URL buildUrl(String entertainmentNewsSource, String category){
         final String ENTERTAINMENT_NEWS_BASE_URL = "https://newsapi.org/v1/articles";
         final String PARAM_SOURCE = "source";
         final String PARAM_SORT_BY = "sortBy";
-//        final String top = "top";
         final String PARAM_API_KEY = "apiKey";
         final String KEY = "3431d57e51a04c1d967e2eb96c99fd1a";
 

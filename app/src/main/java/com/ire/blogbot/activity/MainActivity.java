@@ -10,8 +10,6 @@ import com.ire.blogbot.fragments.NewsFragmentPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-//    private static final String TECH_NEWS_REQUEST_URL = "https://newsapi.org/v1/articles?source=techcrunch&sortBy=latest&apiKey=3431d57e51a04c1d967e2eb96c99fd1a";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 //        COMPLETED: View pager - tech and gist
 //        COMPLETED: Convert time to readable text
 //        TODO: Change font of BlogBot and tab titles
-//        TODO: Open link after list click
+//        COMPLETED: Open link after list click
 //        TODO: add additional urls
 //        COMPLETED: add images of news
 //        TODO: Show * notification on viewpager titles
@@ -30,8 +28,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         NewsFragmentPagerAdapter newsFragmentPagerAdapter = new NewsFragmentPagerAdapter(getSupportFragmentManager(), this);
-
-
 
         viewPager.setAdapter(newsFragmentPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

@@ -1,7 +1,5 @@
 package com.ire.blogbot.adapter;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +18,6 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import static android.support.v4.content.ContextCompat.startActivity;
-
 /**
  * Created by ire on 5/23/17.
  */
@@ -30,7 +26,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
 //    Variable used to reference the model
     private ArrayList<News> mNews = new ArrayList<>();
-    private static ClickListener clickListener;
 
 //    Setting the adapter
     public NewsAdapter(ArrayList<News> news) {
@@ -86,7 +81,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     }
 
     //    NewsHolder class that extends the ViewHolder
-    public static class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class NewsHolder extends RecyclerView.ViewHolder {
         private ImageView mImageView;
         private TextView mNewsTextView;
         private TextView mTimeStampTextView;
@@ -94,36 +89,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         //   Setting the views
         public NewsHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
             mImageView = (ImageView) itemView.findViewById(R.id.simple_imageView);
             mNewsTextView = (TextView) itemView.findViewById(R.id.news_tv);
             mTimeStampTextView = (TextView) itemView.findViewById(R.id.time_tv);
         }
 
-       /* @Override
-        public void onClick(View v) {
-
-            startActivity(intent);
-        }
-
-        private void startActivity(Intent intent) {
-            News currentNews = news.get(getItemId());
-
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
-        }
-*/
-        @Override
-        public void onClick(View view) {
-            clickListener.onClick(getAdapterPosition(), view);
-        }
-    }
-
-    public void setOnItemClickListener(ClickListener listener) {
-        NewsAdapter.clickListener = listener;
-    }
-
-    public interface ClickListener {
-        void onClick(int position, View v);
     }
 
 }

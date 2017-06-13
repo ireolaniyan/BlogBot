@@ -11,6 +11,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ire.blogbot.model.RecyclerItemClickListener;
 import com.ire.blogbot.activity.MainActivity;
 import com.ire.blogbot.model.News;
 import com.ire.blogbot.adapter.NewsAdapter;
@@ -38,7 +40,7 @@ public class TechFragment extends Fragment {
     private NewsAdapter mNewsAdapter;
     ArrayList<News> news;
     NetworkInfo info;
-    //  5uu  The Loader takes in a bundle
+    //  The Loader takes in a bundle
     Bundle sourceBundle = new Bundle();
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -63,8 +65,6 @@ public class TechFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_main);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
 
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-
 //        COMPLETED: Change to real data/
 
         getActivity().getSupportLoaderManager().initLoader(TECH_NEWS_LOADER, sourceBundle, new NewsDataLoader());
@@ -83,7 +83,7 @@ public class TechFragment extends Fragment {
         return view;
     }
 
-    private boolean isConnected(){
+    private boolean isConnected() {
         ConnectivityManager cm = (ConnectivityManager) getActivity()
                 .getSystemService(CONNECTIVITY_SERVICE);
 
@@ -120,7 +120,7 @@ public class TechFragment extends Fragment {
         Log.v(LOG_TAG, "Finished refreshing");
     }
 
-    private void showErrorScreen(){
+    private void showErrorScreen() {
         mErrorMessage.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
 //        TODO: make text more fancy and put apostrophe
@@ -130,7 +130,7 @@ public class TechFragment extends Fragment {
     public class NewsDataLoader implements LoaderManager.LoaderCallbacks<ArrayList<News>> {
         @Override
         public Loader<ArrayList<News>> onCreateLoader(int id, final Bundle args) {
-            if (isConnected()){
+            if (isConnected()) {
                 mErrorMessage.setVisibility(View.INVISIBLE);
                 mRecyclerView.setVisibility(View.VISIBLE);
                 return new AsyncTaskLoader<ArrayList<News>>(getActivity()) {
@@ -139,9 +139,9 @@ public class TechFragment extends Fragment {
                     @Override
                     protected void onStartLoading() {
                         super.onStartLoading();
-                        if (mNewsData != null){
+                        if (mNewsData != null) {
                             deliverResult(mNewsData);
-                        }else{
+                        } else {
                             forceLoad();
                             mSwipeRefreshLayout.setRefreshing(true);
                         }
@@ -163,7 +163,7 @@ public class TechFragment extends Fragment {
                         super.deliverResult(data);
                     }
                 };
-            }else{
+            } else {
                 showErrorScreen();
                 return null;
             }
@@ -172,7 +172,7 @@ public class TechFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<ArrayList<News>> loader, final ArrayList<News> data) {
             mSwipeRefreshLayout.setRefreshing(false);
-          /*  if (null == data) {
+            if (null == data) {
                 showErrorScreen();
             } else {
                 mErrorMessage.setVisibility(View.INVISIBLE);
@@ -184,39 +184,33 @@ public class TechFragment extends Fragment {
                     mRecyclerView.setAdapter(mNewsAdapter);
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                     mNewsAdapter.notifyDataSetChanged();
+
+//                    Separator between list items
+                    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                            LinearLayoutManager.VERTICAL);
+                    mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+                    mRecyclerView.addOnItemTouchListener(
+                            new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    News currentNews = news.get(position);
+
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
+                                    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                        startActivity(intent);
+                                    }
+                                }
+                            })
+                    );
+
                 } else {
                     news = data;
                 }
             }
-            mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
-                @Override
-                public void onItemClick(int position, View v) {
-                    News currentNews = news.get(position);
 
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
-                    startActivity(intent);
-                }
-            });*/
-
-
-            if (data != null) {
-                if (news != null) {
-                    news.clear();
-                    news.addAll(data);
-                    if (mNewsAdapter != null) {
-                        mNewsAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    news = data;
-                }
-                mNewsAdapter = new NewsAdapter(news);
-
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-                mRecyclerView.setAdapter(mNewsAdapter);
-            } else {
-                showErrorScreen();
-            }
         }
+
 
         @Override
         public void onLoaderReset(Loader<ArrayList<News>> loader) {

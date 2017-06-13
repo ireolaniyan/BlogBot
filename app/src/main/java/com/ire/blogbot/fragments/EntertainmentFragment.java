@@ -1,7 +1,9 @@
 package com.ire.blogbot.fragments;
 
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ire.blogbot.model.RecyclerItemClickListener;
 import com.ire.blogbot.activity.MainActivity;
 import com.ire.blogbot.utils.NetworkUtils;
 import com.ire.blogbot.model.News;
@@ -41,8 +45,8 @@ public class EntertainmentFragment extends Fragment {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private static final String ENTERTAINMENT_NEWS_QUERY_URL = "query";
-    private static final String ENTERTAINMENT_NEWS_SOURCE = "entertainment-weekly";
-    private static final String ENTERTAINMENT_SOURCE_CATEGORY = "top";
+    private static final String ENTERTAINMENT_NEWS_SOURCE = "metro";
+    private static final String ENTERTAINMENT_SOURCE_CATEGORY = "latest";
     private static final int ENTERTAINMENT_NEWS_LOADER = 21;
 
     private RecyclerView mRecyclerView;
@@ -169,7 +173,7 @@ public class EntertainmentFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<ArrayList<News>> loader, ArrayList<News> data) {
             mSwipeRefreshLayout.setRefreshing(false);
-    /*        if (null == data) {
+            if (null == data) {
                 showErrorScreen();
             } else {
                 mErrorMessage.setVisibility(View.INVISIBLE);
@@ -181,37 +185,30 @@ public class EntertainmentFragment extends Fragment {
                     mRecyclerView.setAdapter(mNewsAdapter);
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                     mNewsAdapter.notifyDataSetChanged();
-                } else {
-                    news = data;
-                }*/
-            if (data != null) {
-                mErrorMessage.setVisibility(View.INVISIBLE);
-                mRecyclerView.setVisibility(View.VISIBLE);
-                if (news != null) {
-                    news.clear();
-                    news.addAll(data);
-                    if (mNewsAdapter != null) {
-                        mNewsAdapter.notifyDataSetChanged();
-                    }
+
+//                Separator between list items
+                    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                            LinearLayoutManager.VERTICAL);
+                    mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+                    mRecyclerView.addOnItemTouchListener(
+                            new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+
+                                    News currentNews = news.get(position);
+
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
+                                    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                        startActivity(intent);
+                                    }
+                                }
+                            })
+                    );
                 } else {
                     news = data;
                 }
-                mNewsAdapter = new NewsAdapter(news);
-
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-                mRecyclerView.setAdapter(mNewsAdapter);
-            } else {
-                showErrorScreen();
             }
-           /* mNewsAdapter.setOnItemClickListener(new NewsAdapter.ClickListener(){
-                @Override
-                public void onItemClick(int position, View v) {
-                    News currentNews = news.get(position);
-
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getUrl()));
-                    startActivity(intent);
-                }
-            });*/
 
         }
 
