@@ -20,15 +20,6 @@
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/news_tv"
-        tools:text="Get exciting news here"
-        android:layout_toRightOf="@id/simple_imageView"
-        android:layout_toEndOf="@id/simple_imageView"
-        android:paddingLeft="8dp"/>
-
-    <TextView
         android:id="@+id/time_tv"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
@@ -38,5 +29,18 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/news_tv"
+        tools:text="Get exciting news here"
+        android:paddingLeft="8dp"
+        android:layout_marginTop="14dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@id/simple_imageView"
+        android:layout_toEndOf="@id/simple_imageView"/>
 
 </RelativeLayout>

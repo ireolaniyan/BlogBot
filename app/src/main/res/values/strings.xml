@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">entech</string>
+    <string name="app_name">blogga</string>
 
     <string name="internet_error">Oops! Couldn\'t connect to the internet</string>
 
-    <string name="entertainmet_page_title">ENTERTAINMENT</string>
+    <string name="entertainment_page_title">ENTERTAINMENT</string>
     <string name="tech_page_title">TECH</string>
 </resources>
