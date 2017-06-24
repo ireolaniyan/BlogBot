@@ -62,7 +62,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     @Override
     public NewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_view, parent, false);
         return new NewsHolder(view);
     }
 
@@ -89,7 +89,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         //   Setting the views
         public NewsHolder(View itemView) {
             super(itemView);
-            mImageView = (ImageView) itemView.findViewById(R.id.simple_imageView);
+            mImageView = (ImageView) itemView.findViewById(R.id.imageView2);
             mNewsTextView = (TextView) itemView.findViewById(R.id.news_tv);
             mTimeStampTextView = (TextView) itemView.findViewById(R.id.time_tv);
         }

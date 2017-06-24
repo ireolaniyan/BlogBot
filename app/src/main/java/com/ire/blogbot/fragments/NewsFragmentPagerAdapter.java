@@ -32,7 +32,7 @@ public class NewsFragmentPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position){
             case 0:
-                return mContext.getString(R.string.entertainmet_page_title);
+                return mContext.getString(R.string.entertainment_page_title);
             case 1:
                 return mContext.getString(R.string.tech_page_title);
             default:

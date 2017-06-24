@@ -21,7 +21,7 @@
         android:gravity="center"
         android:layout_margin="32dp"
         android:textSize="16sp"
-        android:fontFamily="monospace"
+        android:fontFamily="serif"
         android:visibility="invisible"/>
 
     <android.support.v7.widget.RecyclerView
