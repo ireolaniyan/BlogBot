@@ -14,23 +14,23 @@
         android:contentDescription="News Image"/>
 
     <TextView
-        android:padding="16dp"
+        android:padding="8dp"
         android:layout_toRightOf="@id/simple_imageView"
         android:layout_toEndOf="@id/simple_imageView"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/news_tv"
         tools:text="Get exciting news here"/>
 
     <TextView
         android:paddingRight="16dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="2dp"
         tools:text="12:00pm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/news_tv"
+        android:id="@+id/time_tv"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/time_tv" />
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
